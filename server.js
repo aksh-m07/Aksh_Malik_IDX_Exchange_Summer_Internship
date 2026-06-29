@@ -19,6 +19,10 @@ app.get('/api/health', async (req,res) =>{
     
 
 });
+const propertiesRouter = require('./routes/properties');
+app.use('/api/properties', propertiesRouter);
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
+
+
