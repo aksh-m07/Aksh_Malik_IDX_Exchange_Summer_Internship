@@ -1,6 +1,19 @@
 const express=require('express');
 const router=express.Router()
 const db = require('../db');
+
+router.use((req,res,next) =>{
+    const start = Date.now();
+    res.on('finish',()=>{
+        const duration = Date.now() - start;
+        console.log(`${req.method} ${req.originalUrl} ${res.statusCode} - ${duration}ms`);
+        
+    });
+    next();
+   
+});
+
+
 function validateQueryParams({ limit, offset, minPrice, maxPrice, beds, baths }) {
   const errors = [];
   if(limit!==undefined){
@@ -89,8 +102,8 @@ router.get('/', async(req, res) =>{
     }
 
     if (baths !== undefined) {
-    conditions.push('L_Keyword5 = ?');
-    values.push(Number(baths));
+        conditions.push('LM_Dec_3 = ?');
+        values.push(Number(baths));
     }
     const whereclause=conditions.length>0?`WHERE ${conditions.join(' AND ')}` :'';
     try{
@@ -111,4 +124,48 @@ router.get('/', async(req, res) =>{
         return res.status(500).json({error: 'Internal server error' });
     }
 });
+
+router.get('/:id/openhouses', async(req,res)=>{
+    const {id}=req.params;
+
+    if (!id || id.length > 50 || !/^[a-zA-Z0-9_-]+$/.test(id)){
+        return res.status(400).json({error: 'Invalid listing ID'});
+    }
+    try{
+        const [Propertyrows]=await db.query('SELECT id from rets_property WHERE L_ListingID = ?',[id])
+        if(Propertyrows.length==0){
+            return res.status(404).json({ error: 'Property not found' });
+        }
+        const [openHouses] = await db.query('SELECT * FROM rets_openhouse WHERE L_ListingID = ? ORDER BY OpenHouseDate ASC, OH_StartTime ASC',[id]);
+        return res.json(openHouses);
+
+    }
+    catch(err){
+        console.log(err);
+        return res.status(500).json({ error: 'Internal server error' })
+    }
+    
+});
+router.get('/:id', async(req,res)=>{
+    const {id}=req.params;
+    if (!id || id.length > 50 || !/^[a-zA-Z0-9_-]+$/.test(id)){
+        return res.status(400).json({error: 'Invalid listing ID'});
+    }
+    try{
+        const [rows]=await db.query('SELECT * FROM rets_property WHERE L_ListingID = ?',[id]);
+        if(rows.length==0){
+            return res.status(404).json({ error: 'Property not found' });
+        }
+        return res.json(rows[0])
+    }
+    catch(err){
+        console.log(err);
+        return res.status(500).json({ error: 'Internal server error' })
+    }
+});
+
+
+
+
+
 module.exports = router;
