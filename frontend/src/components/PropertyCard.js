@@ -10,8 +10,21 @@ export default function PropertyCard({ property }) {
     L_Keyword2: beds,
     LM_Dec_3: baths,
     L_Photos: rawPhotos,
+    LM_Int2_3: sq
   } = property;
   const photos=parsePhotos(rawPhotos);
-  prconst firstPhoto = photos.length > 0 ? photos[0] : null;
-
+  const firstPhoto = photos.length > 0 ? photos[0] : null;
+  return(
+    <div className="property-card">
+         {firstPhoto ? (
+  <img src={firstPhoto} alt={address} className="property-photo" />) : (<div className="property-photo-placeholder">No Photo Available</div>)};
+      <div className="property-info">
+      <p className="price">Price: ${price?.toLocaleString()}</p>
+      <p className="address">Address: {address}</p>
+      <p className="city-state">Loc: {city}, {state}</p>
+      <p className="beds-baths">Bed and Baths: {beds} bd | {baths} ba</p>
+      <p className="sqft">Sqft:{sq} </p>
+    </div>
+  </div>    
+  );
 }
