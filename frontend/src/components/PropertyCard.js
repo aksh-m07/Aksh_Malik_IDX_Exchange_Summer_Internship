@@ -17,7 +17,7 @@ export default function PropertyCard({ property }) {
   return(
     <div className="property-card">
          {firstPhoto ? (
-  <img src={firstPhoto} alt={address} className="property-photo" />) : (<div className="property-photo-placeholder">No Photo Available</div>)};
+  <img src={firstPhoto} alt={address} className="property-photo" />) : (<div className="property-photo-placeholder">No Photo Available</div>)}
       <div className="property-info">
       <p className="price">Price: ${price?.toLocaleString()}</p>
       <p className="address">Address: {address}</p>
