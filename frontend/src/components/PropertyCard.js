@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { parsePhotos } from "../utils/photos";
 
 export default function PropertyCard({ property }) {
@@ -14,10 +14,12 @@ export default function PropertyCard({ property }) {
   } = property;
   const photos=parsePhotos(rawPhotos);
   const firstPhoto = photos.length > 0 ? photos[0] : null;
+  const [imgError,setImgError]=useState(false)
+  
   return(
     <div className="property-card">
-         {firstPhoto ? (
-  <img src={firstPhoto} alt={address} className="property-photo" />) : (<div className="property-photo-placeholder">No Photo Available</div>)}
+         {firstPhoto && !imgError ? (
+  <img src={firstPhoto} alt={address} className="property-photo" onError={() => setImgError(true)} /> ) : (<div className="property-photo-placeholder">No Photo Available</div>)}
       <div className="property-info">
       <p className="price">Price: ${price?.toLocaleString()}</p>
       <p className="address">Address: {address}</p>
