@@ -10,23 +10,31 @@ export default function ListingsPage() {
   const [error, setError] = useState(null);
   const [activeFilters, setActiveFilters] = useState({});
   useEffect(()=>{
+    let ignore = false;
     async function loadProperties() {
       try{
         setLoading(true);
         setError(null);
         const data = await fetchProperties({ limit: 20, offset: 0, ...activeFilters});
-        setProperties(data.results);
-        setTotal(data.total);
+      
+        if (!ignore) {                 
+          setProperties(data.results);
+          setTotal(data.total);
+        }
       }
       catch(err){
+        if (!ignore) {
         setError(err.message);
+        }
       }
       finally {
-        setLoading(false);
+        if (!ignore) {
+          setLoading(false);
+        }      
       }
     }
     loadProperties();
-
+    return ()=>{ignore=true}
   },[activeFilters]);
 
   function handleSearch(filters){
@@ -43,14 +51,16 @@ export default function ListingsPage() {
   setActiveFilters({});
   }
   if (loading) {
-    return <p className="status-message">Loading properties...</p>;
-    <PropertyFilters onSearch={handleSearch} onClear={handleClear} />
+    return (<><p className="status-message">Loading properties...</p>
+    <PropertyFilters onSearch={handleSearch} onClear={handleClear} /></>);
   }
 
 
   if (error) {
-    return <p className="status-message error">Error: {error}</p>;
-    <PropertyFilters onSearch={handleSearch} onClear={handleClear} />
+    return (
+      <><p className="status-message error">Error: {error}</p>
+    <PropertyFilters onSearch={handleSearch} onClear={handleClear} /></>);
+    
   }
   return(
     <div className="listings-page">
