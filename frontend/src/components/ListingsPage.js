@@ -50,28 +50,22 @@ export default function ListingsPage() {
   function handleClear() {
   setActiveFilters({});
   }
-  if (loading) {
-    return (<><p className="status-message">Loading properties...</p>
-    <PropertyFilters onSearch={handleSearch} onClear={handleClear} /></>);
-  }
-
-
-  if (error) {
-    return (
-      <><p className="status-message error">Error: {error}</p>
-    <PropertyFilters onSearch={handleSearch} onClear={handleClear} /></>);
-    
-  }
-  return(
-    <div className="listings-page">
-      <PropertyFilters onSearch={handleSearch} onClear={handleClear} />
-      <p className="results-count">Showing {properties.length} of {total} properties</p>
-      
-      <div className="property-grid">
-        {properties.map((property) => (
-          <PropertyCard key={property.L_ListingID} property={property} />
-        ))}
-      </div>
-    </div>
-  );
+  
+  return (
+  <div className="listings-page">
+    <PropertyFilters onSearch={handleSearch} onClear={handleClear} />
+    {loading && <p className="status-message">Loading properties...</p>}
+    {!loading && error && <p className="status-message error">Error: {error}</p>}
+    {!loading && !error && (
+      <>
+        <p className="results-count">Showing {properties.length} of {total} properties</p>
+        <div className="property-grid">
+            {properties.map((property) => (
+            <PropertyCard key={property.L_ListingID} property={property} />
+          ))}
+        </div>
+      </>
+    )}
+  </div>
+);
 }
