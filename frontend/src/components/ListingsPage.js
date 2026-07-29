@@ -2,6 +2,7 @@ import React, { useState, useEffect, use } from "react";
 import { fetchProperties } from "../api/client";
 import PropertyCard from "./PropertyCard";
 import PropertyFilters from "./filter";   
+import Pagination from "./Pagination";
 
 export default function ListingsPage() {
   const [properties, setProperties] = useState([]);
@@ -9,13 +10,16 @@ export default function ListingsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeFilters, setActiveFilters] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
   useEffect(()=>{
     let ignore = false;
     async function loadProperties() {
       try{
         setLoading(true);
         setError(null);
-        const data = await fetchProperties({ limit: 20, offset: 0, ...activeFilters});
+        const offset=(currentPage - 1) * itemsPerPage;
+        const data = await fetchProperties({ limit: itemsPerPage, offset, ...activeFilters});
       
         if (!ignore) {                 
           setProperties(data.results);
@@ -35,7 +39,11 @@ export default function ListingsPage() {
     }
     loadProperties();
     return ()=>{ignore=true}
-  },[activeFilters]);
+  },[activeFilters, currentPage]);
+
+  useEffect(() => {
+  window.scrollTo(0, 0);
+  }, [currentPage]);
 
   function handleSearch(filters){
     const cleaned = {};
@@ -45,11 +53,21 @@ export default function ListingsPage() {
       }
     }
     setActiveFilters(cleaned);
+    setCurrentPage(1);
   }
 
   function handleClear() {
-  setActiveFilters({});
+    setActiveFilters({});
+    setCurrentPage(1);
   }
+  function handlePageChange(page) {
+  setCurrentPage(page);
+  } 
+  const totalPages = Math.ceil(total / itemsPerPage);
+  const startItem = (currentPage - 1) * itemsPerPage + 1;
+  const endItem = Math.min(currentPage * itemsPerPage, total);
+
+  
   
   return (
   <div className="listings-page">
@@ -58,12 +76,17 @@ export default function ListingsPage() {
     {!loading && error && <p className="status-message error">Error: {error}</p>}
     {!loading && !error && (
       <>
-        <p className="results-count">Showing {properties.length} of {total} properties</p>
+        <p className="results-count">Showing {startItem}-{endItem} of {total} properties</p>
         <div className="property-grid">
             {properties.map((property) => (
             <PropertyCard key={property.L_ListingID} property={property} />
           ))}
         </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </>
     )}
   </div>
