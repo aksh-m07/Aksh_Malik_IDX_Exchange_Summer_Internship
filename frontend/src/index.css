@@ -182,3 +182,293 @@ body {
   color: #6b7280;
   user-select: none;
 }
+.property-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.property-detail {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+  font-family: inherit;
+}
+
+.detail-status {
+  padding: 40px;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.detail-status--error {
+  color: #b00020;
+}
+
+.detail-price {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+}
+
+.detail-address {
+  font-size: 1.1rem;
+  color: #555;
+  margin: 0 0 16px 0;
+}
+
+.detail-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px 0;
+  margin-bottom: 24px;
+  border-top: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.detail-stats span {
+  white-space: nowrap;
+}
+
+.detail-description,
+.detail-property-info,
+.detail-open-houses {
+  margin-bottom: 28px;
+}
+
+.detail-description h2,
+.detail-property-info h2,
+.detail-open-houses h2 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+.detail-description p {
+  line-height: 1.6;
+  color: #333;
+}
+
+.detail-property-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 24px;
+}
+
+.detail-property-info li {
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.carousel {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #eee;
+}
+
+.carousel__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.carousel--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 0.9rem;
+  aspect-ratio: 4 / 3;
+  background: #eee;
+}
+
+.carousel__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.carousel__arrow--prev {
+  left: 8px;
+}
+
+.carousel__arrow--next {
+  right: 8px;
+}
+
+.carousel__counter {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  z-index: 2;
+}
+.gallery {
+  width: 100%;
+  margin-bottom: 24px;
+
+}
+
+.gallery--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  background: #eee;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.gallery__main-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.gallery__thumbnails {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin-top: 10px;
+  padding-bottom: 4px;
+}
+
+.gallery__thumbnail {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+  opacity: 0.6;
+  border: 2px solid transparent;
+}
+
+.gallery__thumbnail--active {
+  opacity: 1;
+  border-color: #2563eb;
+}
+
+.lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.lightbox__image {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+}
+
+.lightbox__close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2.5rem;
+  cursor: pointer;
+  line-height: 1;
+}
+.property-map {
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+.property-map iframe {
+  border-radius: 8px;
+  display: block;
+}
+
+.directions-link {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 10px 20px;
+  background-color: #10295d;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  transition: background-color 0.15s ease;
+}
+
+.directions-link:hover {
+  background-color: #091126;
+}
+.open-houses-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.open-house-item {
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background-color: #f9fafb;
+}
+
+.open-house-date {
+  font-weight: 600;
+  font-size: 15px;
+  color: #111827;
+  margin: 0 0 4px 0;
+}
+
+.open-house-time {
+  font-size: 14px;
+  color: #4b5563;
+  margin: 0 0 6px 0;
+}
+
+.open-house-remarks {
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.detail-open-houses .detail-status,
+.detail-open-houses p {
+  font-size: 14px;
+  color: #6b7280;
+}
