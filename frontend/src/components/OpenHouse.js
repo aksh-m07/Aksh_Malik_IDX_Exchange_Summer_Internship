@@ -15,9 +15,9 @@ function formatTime(timeString) {
 }
 function formatDate(dateString) {
   if (!dateString) return '';
-  const datePart = dateString.split('T')[0]; // "2026-06-19" -- strips the time/Z part
+  const datePart = dateString.split('T')[0]; 
   const [year, month, day] = datePart.split('-');
-  const date = new Date(Number(year), Number(month) - 1, Number(day)); // constructs LOCAL date, no UTC shift
+  const date = new Date(Number(year), Number(month) - 1, Number(day)); 
   return date.toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' });
 }
 
