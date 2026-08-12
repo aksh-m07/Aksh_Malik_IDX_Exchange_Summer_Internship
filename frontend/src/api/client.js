@@ -18,7 +18,7 @@ async function request(path){
     }
     return response.json();
 }
-export async function fetchProperties({ limit = 20, offset = 0, city, minPrice, maxPrice, beds, baths } = {}) {
+export async function fetchProperties({ limit = 20, offset = 0, city, minPrice, maxPrice, beds, baths, sortBy, sortOrder} = {}) {
     const params=new URLSearchParams();
     params.set("limit",limit);
     params.set("offset",offset);
@@ -27,6 +27,9 @@ export async function fetchProperties({ limit = 20, offset = 0, city, minPrice, 
     if (maxPrice !== undefined) params.set("maxPrice", maxPrice);
     if (beds !== undefined) params.set("beds", beds);
     if (baths !== undefined) params.set("baths", baths);
+    if (sortBy !== undefined) params.set("sortBy", sortBy);
+    if (sortOrder !== undefined) params.set("sortOrder", sortOrder);
+
     return request(`?${params.toString()}`);
 }
 export async function fetchPropertyDetail(id) {

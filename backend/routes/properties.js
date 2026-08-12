@@ -12,9 +12,16 @@ router.use((req,res,next) =>{
     next();
    
 });
+const SORT_WHITELIST = {
+  price: 'L_SystemPrice',
+  date: 'ListingContractDate',
+  sqft: 'LM_Int2_3',
+  beds: 'L_Keyword2',
+  baths: 'LM_Dec_3',
+};
 
 
-function validateQueryParams({ limit, offset, minPrice, maxPrice, beds, baths }) {
+function validateQueryParams({ limit, offset, minPrice, maxPrice, beds, baths, sortBy, sortOrder }) {
   const errors = [];
   if(limit!==undefined){
         const l=Number(limit);
@@ -63,12 +70,23 @@ function validateQueryParams({ limit, offset, minPrice, maxPrice, beds, baths })
             errors.push('baths must be a positive integer');
         }
     }
+    if (sortBy!=undefined){
+        if (!(sortBy in SORT_WHITELIST)) {
+            errors.push('sortBy must be one of: ' + Object.keys(SORT_WHITELIST).join(', '));
+        }
+    }
+    if (sortOrder!=undefined){
+        const validOrders = ['ASC', 'DESC'];
+        if (!validOrders.includes(sortOrder.toUpperCase())) {
+            errors.push('sortOrder must be ASC or DESC');
+        }
+    }
     return errors;
 }
 
 router.get('/', async(req, res) =>{
-    const {city, zipcode, minPrice, maxPrice, beds, baths, limit=10,offset=0}=req.query;
-    const errors = validateQueryParams({ limit, offset, minPrice, maxPrice, beds, baths });
+    const {city, zipcode, minPrice, maxPrice, beds, baths, limit=10,offset=0, sortBy, sortOrder}=req.query;
+    const errors = validateQueryParams({ limit, offset, minPrice, maxPrice, beds, baths, sortBy, sortOrder  });
     if (errors.length > 0) {
     return res.status(400).json({ error: errors.join('; ') });
     }
@@ -105,12 +123,19 @@ router.get('/', async(req, res) =>{
         conditions.push('LM_Dec_3 = ?');
         values.push(Number(baths));
     }
+
     const whereclause=conditions.length>0?`WHERE ${conditions.join(' AND ')}` :'';
+    let orderByClause=''
+    if (sortBy!== undefined){
+        const column = SORT_WHITELIST[sortBy];
+        const direction = sortOrder !== undefined ? sortOrder.toUpperCase() : 'ASC';
+        orderByClause = `ORDER BY ${column} ${direction}`;
+    }
     try{
         const [countResult] = await db.query(
         `SELECT COUNT(*) AS total FROM rets_property ${whereclause}`,values);
         const total = countResult[0].total;
-        const [rows]=await db.query(`SELECT * FROM rets_property ${whereclause} LIMIT ? OFFSET ?`, [...values, parsedLimit, parsedOffset]);
+        const [rows]=await db.query(`SELECT * FROM rets_property ${whereclause} ${orderByClause} LIMIT ? OFFSET ?`, [...values, parsedLimit, parsedOffset]);
         return res.json({
             total,
             limit: parsedLimit,

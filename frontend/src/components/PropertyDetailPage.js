@@ -4,8 +4,11 @@ import { fetchPropertyDetail, fetchOpenHouses } from '../api/client'
 import PropertyImageGallery from './PropertyImageGallery';
 import PropertyMap from './PropertyMap';
 import OpenHouses from './OpenHouse'
+import { useNavigate } from "react-router-dom";
 
 export default function PropertyDetailPage() {
+    const navigate = useNavigate();
+
     const { id } = useParams();
     const [property, setProperty] = useState(null);
     const [openHouses, setOpenHouses] = useState([]);
@@ -55,9 +58,12 @@ export default function PropertyDetailPage() {
         LMD_MP_Latitude: lat,
         LMD_MP_Longitude: lng
 
+
     } = property;
     return(
         <div className='property-detail'>
+            <button className="back-to-listings" onClick={() => navigate("/")}>← Back to Listings</button>
+            
             <PropertyImageGallery L_Photos={photos} alt={address} />
             <h1 className="detail-price">${price?.toLocaleString()}</h1>
             <p className="detail-address">{address}, {city}, {state}</p>

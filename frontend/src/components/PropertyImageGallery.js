@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { parsePhotos } from '../utils/photos';
 export default function PropertyImageGallery({ L_Photos, alt = 'Property photo' }) {
     const photos = parsePhotos(L_Photos);
@@ -11,6 +11,22 @@ export default function PropertyImageGallery({ L_Photos, alt = 'Property photo' 
         </div>
         );
     }
+    useEffect(() => {
+    if (!lightboxOpen) return;
+
+    function handleKeyDown(e) {
+        if (e.key === 'Escape') {
+            setLightboxOpen(false);
+        } else if (e.key === 'ArrowRight') {
+            setMainIndex((prev) => (prev + 1) % photos.length);
+        } else if (e.key === 'ArrowLeft') {
+            setMainIndex((prev) => (prev - 1 + photos.length) % photos.length);
+        }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+}, [lightboxOpen, photos.length]);
     return(
         <div className="gallery">
             <img

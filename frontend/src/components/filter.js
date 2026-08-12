@@ -25,30 +25,38 @@ export default function PropertyFilters({ onSearch, onClear }) {
   return (
     <form className="property-filters" onSubmit={handleSubmit}>
         <input 
+        id="city"
+        name="city"
         type="text"
         placeholder="City"
         value={city}
         onChange={(e) => setCity(e.target.value)}
         />
         <input 
+        id="zipcode"
+        name="zipcode"
         type="text"
         placeholder="ZipCode"
         value={zipcode}
         onChange={(e) => setZipcode(e.target.value)}
         />
         <input 
+        id="minPrice"
+        name="minPrice"
         type="number"
         placeholder="MinPrice"
         value={minPrice}
         onChange={(e) => setMinPrice(e.target.value)}
         />
         <input 
+        id="maxPrice"
+        name="maxPrice"
         type="number"
         placeholder="MaxPrice"
         value={maxPrice}
         onChange={(e) => setMaxPrice(e.target.value)}
         />
-        <select value={beds} onChange={(e) => setBeds(e.target.value)}>
+        <select id="beds" name="beds" value={beds} onChange={(e) => setBeds(e.target.value)}>
             <option value="">Beds: Any</option>
             <option value="1">1</option>
             <option value="2">2</option>
@@ -56,7 +64,7 @@ export default function PropertyFilters({ onSearch, onClear }) {
             <option value="4">4</option>
             <option value="5">5</option>
         </select>
-        <select value={baths} onChange={(e) => setBaths(e.target.value)}>
+        <select id="baths" name="baths" value={baths} onChange={(e) => setBaths(e.target.value)}>
             <option value="">Baths: Any</option>
             <option value="1">1</option>
             <option value="2">2</option>
