@@ -2,7 +2,7 @@
 
 ## Query tested
 
-mysql EXPLAIN SELECT * FROM rets_property  WHERE LOWER(TRIM(L_City)) = LOWER(TRIM('Los Angeles'))  AND L_SystemPrice >= 500000  AND L_SystemPrice <= 1000000  AND L_Keyword2 = 3  AND LM_Dec_3 = 2  ORDER BY L_SystemPrice DESC  LIMIT 20 OFFSET 0;
+mysql> EXPLAIN SELECT * FROM rets_property  WHERE L_City = 'Los Angeles'  AND L_SystemPrice >= 500000  AND L_SystemPrice <= 1000000  AND L_Keyword2 = 3  AND LM_Dec_3 = 2  ORDER BY L_SystemPrice DESC  LIMIT 20 OFFSET 0;
 
 ## Before adding indexes
 
