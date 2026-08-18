@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { fetchProperties } from "../api/client";
-import PropertyCard from "./PropertyCard";
-import PropertyFilters from "./filter";   
-import Pagination from "./Pagination";
+import PropertyCard from "../components/PropertyCard";
+import PropertyFilters from "../components/filter";
+import Pagination from "../components/Pagination";
+
 
 
 
