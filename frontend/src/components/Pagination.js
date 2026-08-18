@@ -11,7 +11,7 @@ function getPageNumbers(currentPage, totalPages, siblingCount = 1){
     const pages = [1];
     if (showLeftEllipsis) pages.push("...");
     for(let i=left;i<=right;i++){
-      if(i!=1 && i!=totalPages){pages.push(i)}
+      if(i!==1 && i!==totalPages){pages.push(i)}
     }
     if (showRightEllipsis) pages.push("...");
     if (totalPages !== 1) pages.push(totalPages);
