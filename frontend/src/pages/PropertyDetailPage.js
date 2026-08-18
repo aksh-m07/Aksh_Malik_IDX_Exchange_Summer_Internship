@@ -1,10 +1,10 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { fetchPropertyDetail, fetchOpenHouses } from '../api/client'
-import PropertyImageGallery from './PropertyImageGallery';
-import PropertyMap from './PropertyMap';
-import OpenHouses from './OpenHouse'
-import { useNavigate } from "react-router-dom";
+import PropertyImageGallery from '../components/PropertyImageGallery';
+import PropertyMap from '../components/PropertyMap';
+import OpenHouses from '../components/OpenHouse';import { useNavigate } from "react-router-dom";
+
 
 export default function PropertyDetailPage() {
     const navigate = useNavigate();
