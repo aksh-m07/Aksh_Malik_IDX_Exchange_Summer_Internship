@@ -1,5 +1,3 @@
-import React, { useState } from "react";
-import { parsePhotos } from "../utils/photos";
 import { Link } from "react-router-dom";
 import PropertyImageCarousel from "./PropertyImageCarousel"
 import PropTypes from "prop-types";
@@ -17,9 +15,6 @@ export default function PropertyCard({ property }) {
     L_ListingID: id
 
   } = property;
-  const photos=parsePhotos(rawPhotos);
-  const firstPhoto = photos.length > 0 ? photos[0] : null;
-  const [imgError,setImgError]=useState(false)
   
   return(
     <Link to={`/property/${id}`} className="property-card-link">

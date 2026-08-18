@@ -17,9 +17,7 @@ export default function ListingsPage() {
   const [sortBy, setSortBy] = useState('');
   const [sortOrder, setSortOrder] = useState('');
   const itemsPerPage = 20;
-  const sortParams = {};
-  if (sortBy) sortParams.sortBy = sortBy;
-  if (sortOrder) sortParams.sortOrder = sortOrder;
+  
   useEffect(()=>{
     let ignore = false;
     async function loadProperties() {
@@ -27,6 +25,9 @@ export default function ListingsPage() {
         setLoading(true);
         setError(null);
         const offset=(currentPage - 1) * itemsPerPage;
+        const sortParams = {};
+        if (sortBy) sortParams.sortBy = sortBy;
+        if (sortOrder) sortParams.sortOrder = sortOrder;
         const data = await fetchProperties({ limit: itemsPerPage, offset, ...activeFilters,...sortParams });
       
         if (!ignore) {                 

@@ -4,7 +4,7 @@ export default function PropertyImageCarousel({ L_Photos, alt = 'Property photo'
     const photos= parsePhotos(L_Photos);
     const [index, setIndex] = useState(0);
 
-    if (photos.length==0){
+    if (photos.length===0){
         return <div className="carousel carousel--empty"><span>No photos available</span></div>
     }
     const goPrev = (e) => {
