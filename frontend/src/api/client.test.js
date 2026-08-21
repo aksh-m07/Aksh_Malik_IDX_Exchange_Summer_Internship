@@ -1,4 +1,4 @@
-import { fetchProperties, fetchPropertyDetail, fetchOpenHouses } from "./client";
+import { fetchProperties} from "./client";
 beforeEach(()=>{global.fetch=jest.fn()});
 afterEach(() => {
   jest.resetAllMocks();

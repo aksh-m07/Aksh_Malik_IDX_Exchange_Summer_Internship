@@ -1,8 +1,8 @@
 import React from "react";
-import ListingsPage from "./components/ListingsPage";
 import { Routes, Route } from "react-router-dom";
-import PropertyDetailPage from "./components/PropertyDetailPage"; 
 import ErrorBoundary from "./components/ErrorBoundary";
+import ListingsPage from "./pages/ListingsPage";
+import PropertyDetailPage from "./pages/PropertyDetailPage";
 
 export default function App() {
   return (

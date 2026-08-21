@@ -1,8 +1,6 @@
-import React, { useState } from "react";
-import { parsePhotos } from "../utils/photos";
 import { Link } from "react-router-dom";
 import PropertyImageCarousel from "./PropertyImageCarousel"
-
+import PropTypes from "prop-types";
 
 export default function PropertyCard({ property }) {
       const {
@@ -17,9 +15,6 @@ export default function PropertyCard({ property }) {
     L_ListingID: id
 
   } = property;
-  const photos=parsePhotos(rawPhotos);
-  const firstPhoto = photos.length > 0 ? photos[0] : null;
-  const [imgError,setImgError]=useState(false)
   
   return(
     <Link to={`/property/${id}`} className="property-card-link">
@@ -36,4 +31,17 @@ export default function PropertyCard({ property }) {
     </Link>
   
   );
+}
+PropertyCard.propTypes={
+  property:PropTypes.shape({
+    L_SystemPrice: PropTypes.number,
+    L_Address: PropTypes.string,
+    L_City: PropTypes.string,
+    L_State: PropTypes.string,
+    L_Keyword2: PropTypes.number,
+    LM_Dec_3: PropTypes.string,
+    L_Photos: PropTypes.string,
+    LM_Int2_3: PropTypes.number,
+    L_ListingID: PropTypes.string,
+  }).isRequired
 }
