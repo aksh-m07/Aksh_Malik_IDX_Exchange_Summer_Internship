@@ -12,15 +12,16 @@ router.use((req,res,next) =>{
     next();
    
 });
-const SORT_WHITELIST = {
+
+
+const SORT_WHITELIST = { // whitelist prevents injecting arbitrary column names via ?sortBy=
+
   price: 'L_SystemPrice',
   date: 'ListingContractDate',
   sqft: 'LM_Int2_3',
   beds: 'L_Keyword2',
   baths: 'LM_Dec_3',
 };
-
-
 function validateQueryParams({ limit, offset, minPrice, maxPrice, beds, baths, sortBy, sortOrder }) {
   const errors = [];
   if(limit!==undefined){
@@ -92,10 +93,15 @@ router.get('/', async(req, res) =>{
     }
     const parsedLimit = Number(limit);
     const parsedOffset = Number(offset);
-    const conditions = [];
-    const values = [];
+
+    const conditions = [];// SQL fragments for the WHERE clause
+    const values = [];// parallel array, one value per '?' placeholder, in the same order
+
     if (city) {
     conditions.push('LOWER(TRIM(L_City)) = LOWER(TRIM(?))');
+    // LOWER(TRIM(...)) on both sides makes city matching case- and
+    // whitespace-insensitive (" San diego " matches "San Diego"), since
+    // MLS data entry isn't consistent about casing/spacing.
     values.push(city);
     }
 
@@ -133,9 +139,11 @@ router.get('/', async(req, res) =>{
     }
     try{
         const [countResult] = await db.query(
-        `SELECT COUNT(*) AS total FROM rets_property ${whereclause}`,values);
+        `SELECT COUNT(*) AS total FROM rets_property ${whereclause}`,values);// total match count, for pagination UI
         const total = countResult[0].total;
-        const [rows]=await db.query(`SELECT * FROM rets_property ${whereclause} ${orderByClause} LIMIT ? OFFSET ?`, [...values, parsedLimit, parsedOffset]);
+
+        const [rows]=await db.query(`SELECT * FROM rets_property ${whereclause} ${orderByClause} LIMIT ? OFFSET ?`, [...values, parsedLimit, parsedOffset]);// limit/offset appended last, matching '?' order in the SQL
+
         return res.json({
             total,
             limit: parsedLimit,
@@ -153,7 +161,7 @@ router.get('/', async(req, res) =>{
 router.get('/:id/openhouses', async(req,res)=>{
     const {id}=req.params;
 
-    if (!id || id.length > 50 || !/^[a-zA-Z0-9_-]+$/.test(id)){
+    if (!id || id.length > 50 || !/^[a-zA-Z0-9_-]+$/.test(id)){// alphanumeric/underscore/hyphen only, max 50 chars
         return res.status(400).json({error: 'Invalid listing ID'});
     }
     try{
@@ -171,7 +179,10 @@ router.get('/:id/openhouses', async(req,res)=>{
     }
     
 });
-router.get('/:id', async(req,res)=>{
+
+
+router.get('/:id', async(req,res)=>{ // must be registered before '/:id' below, or this route never matches
+
     const {id}=req.params;
     if (!id || id.length > 50 || !/^[a-zA-Z0-9_-]+$/.test(id)){
         return res.status(400).json({error: 'Invalid listing ID'});

@@ -1,25 +1,34 @@
 import React from "react";
 function getPageNumbers(currentPage, totalPages, siblingCount = 1){
-    const totalNumbersShown = siblingCount * 2 + 5;
+
+    const totalNumbersShown = siblingCount * 2 + 5;// first + last + current + 2 siblings/side + 2 ellipsis slots
+
     if(totalPages<=totalNumbersShown){
       return Array.from({length: totalPages},(_, i) => i + 1);
     }
-    const left = Math.max(currentPage - siblingCount, 1);
-    const right = Math.min(currentPage + siblingCount, totalPages);
-    const showLeftEllipsis = left > 2;
-    const showRightEllipsis=right<totalPages - 1;
+
+    const left = Math.max(currentPage - siblingCount, 1); // clamp so it never goes below page 1
+    const right = Math.min(currentPage + siblingCount, totalPages);// clamp so it never exceeds totalPages
+    const showLeftEllipsis = left > 2;// only show "..." if there's an actual gap after page 1
+    const showRightEllipsis=right<totalPages - 1;// same idea, mirrored before the last page
+
     const pages = [1];
     if (showLeftEllipsis) pages.push("...");
+    // Fill in the sibling window (left..right). Skiping 1 and totalPages here
+    // specifically because they're pushed separately below. Without this check,
+    // they could be pushed twice if the sibling window happens to reach
+    // either edge.
     for(let i=left;i<=right;i++){
-      if(i!==1 && i!==totalPages){pages.push(i)}
+
+    if(i!==1 && i!==totalPages){pages.push(i)}// skip 1/totalPages here. They're pushed separately below
     }
     if (showRightEllipsis) pages.push("...");
-    if (totalPages !== 1) pages.push(totalPages);
+    if (totalPages !== 1) pages.push(totalPages);// avoid pushing page 1 twice when totalPages is 1
     return pages;
   }
 
   export default function Pagination({ currentPage, totalPages, onPageChange }) {
-    if (totalPages<=1){
+    if (totalPages<=1){// no pagination UI needed for 0 or 1 pages
         return null;
     }
     const pages = getPageNumbers(currentPage, totalPages);
