@@ -12,21 +12,16 @@ router.use((req,res,next) =>{
     next();
    
 });
-// Maps user-facing sort keys to real column names. 
-// req.query.sortBy directly into SQL — this whitelist is what prevents
-// a client from injecting arbitrary column names (or SQL) via ?sortBy=.
-const SORT_WHITELIST = {
+
+
+const SORT_WHITELIST = { // whitelist prevents injecting arbitrary column names via ?sortBy=
+
   price: 'L_SystemPrice',
   date: 'ListingContractDate',
   sqft: 'LM_Int2_3',
   beds: 'L_Keyword2',
   baths: 'LM_Dec_3',
 };
-
-// Validates all filter/pagination inputs up front, before touching the
-// database. Collects every error instead of stopping at the first one,
-// so the client gets a complete list of what's wrong in a single request.
-
 function validateQueryParams({ limit, offset, minPrice, maxPrice, beds, baths, sortBy, sortOrder }) {
   const errors = [];
   if(limit!==undefined){
@@ -98,16 +93,10 @@ router.get('/', async(req, res) =>{
     }
     const parsedLimit = Number(limit);
     const parsedOffset = Number(offset);
-    // Build the WHERE clause dynamically: only filters the client actually
-    // provided get added, so a request with no filters returns everything.
-    // `conditions` holds the SQL fragments, `values` holds the matching
-    // parameters in the same order — kept as two parallel arrays so they
-    // can be joined and passed together to db.query(), preserving
-    // parameterized (?) placeholders rather than string-concatenating
-    // user input into the query (SQL injection prevention).
 
-    const conditions = [];
-    const values = [];
+    const conditions = [];// SQL fragments for the WHERE clause
+    const values = [];// parallel array, one value per '?' placeholder, in the same order
+
     if (city) {
     conditions.push('LOWER(TRIM(L_City)) = LOWER(TRIM(?))');
     // LOWER(TRIM(...)) on both sides makes city matching case- and
@@ -150,17 +139,11 @@ router.get('/', async(req, res) =>{
     }
     try{
         const [countResult] = await db.query(
-        `SELECT COUNT(*) AS total FROM rets_property ${whereclause}`,values);
+        `SELECT COUNT(*) AS total FROM rets_property ${whereclause}`,values);// total match count, for pagination UI
         const total = countResult[0].total;
-        // Two queries: one to get the total match count (for pagination UI —
-        // "page 3 of 12"), one to get just this page's rows. Both use the same
-        // WHERE clause/values so they're counting and fetching from the same
-        // filtered set.
 
-        // LIMIT and OFFSET are appended after any filter values, since they're
-        // the last two ? placeholders in the query string (in that order) —
-        // this array's order must match the ?'s left-to-right in the SQL.
-        const [rows]=await db.query(`SELECT * FROM rets_property ${whereclause} ${orderByClause} LIMIT ? OFFSET ?`, [...values, parsedLimit, parsedOffset]);
+        const [rows]=await db.query(`SELECT * FROM rets_property ${whereclause} ${orderByClause} LIMIT ? OFFSET ?`, [...values, parsedLimit, parsedOffset]);// limit/offset appended last, matching '?' order in the SQL
+
         return res.json({
             total,
             limit: parsedLimit,
@@ -177,11 +160,8 @@ router.get('/', async(req, res) =>{
 
 router.get('/:id/openhouses', async(req,res)=>{
     const {id}=req.params;
-    // Only alphanumeric, underscore, and hyphen allowed, max 50 chars.
-    // Rejects anything that could be a path-traversal attempt or malformed
-    // input before it ever reaches a query — L_ListingID is expected to be
-    // a simple MLS identifier, never free text.
-    if (!id || id.length > 50 || !/^[a-zA-Z0-9_-]+$/.test(id)){
+
+    if (!id || id.length > 50 || !/^[a-zA-Z0-9_-]+$/.test(id)){// alphanumeric/underscore/hyphen only, max 50 chars
         return res.status(400).json({error: 'Invalid listing ID'});
     }
     try{
@@ -199,10 +179,10 @@ router.get('/:id/openhouses', async(req,res)=>{
     }
     
 });
-// Registered before the '/:id' route below. Express matches routes
-// top-to-bottom, so if '/:id' came first, a request to
-// '/456/openhouses' would never reach this handler.
-router.get('/:id', async(req,res)=>{
+
+
+router.get('/:id', async(req,res)=>{ // must be registered before '/:id' below, or this route never matches
+
     const {id}=req.params;
     if (!id || id.length > 50 || !/^[a-zA-Z0-9_-]+$/.test(id)){
         return res.status(400).json({error: 'Invalid listing ID'});
