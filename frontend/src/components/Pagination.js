@@ -11,9 +11,15 @@ function getPageNumbers(currentPage, totalPages, siblingCount = 1){
     const right = Math.min(currentPage + siblingCount, totalPages);// clamp so it never exceeds totalPages
     const showLeftEllipsis = left > 2;// only show "..." if there's an actual gap after page 1
     const showRightEllipsis=right<totalPages - 1;// same idea, mirrored before the last page
+
     const pages = [1];
     if (showLeftEllipsis) pages.push("...");
+    // Fill in the sibling window (left..right). Skiping 1 and totalPages here
+    // specifically because they're pushed separately below. Without this check,
+    // they could be pushed twice if the sibling window happens to reach
+    // either edge.
     for(let i=left;i<=right;i++){
+
     if(i!==1 && i!==totalPages){pages.push(i)}// skip 1/totalPages here. They're pushed separately below
     }
     if (showRightEllipsis) pages.push("...");
